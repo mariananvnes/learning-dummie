@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)https://castellolopescinemas.pt/sessoes-cinema/?cinema=Vida%20Ovar -->
+<html lang="pt"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sessões de Cinema</title>
+    <meta name="description" content="Sessões de Cinema">
+    <meta name="author" content="componto">
+    <script type="text/javascript" src="./Sessões de Cinema_files/index.js.transferir"></script>
+    <script src="./Sessões de Cinema_files/jquery-3.4.1.min.js.transferir" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./Sessões de Cinema_files/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="./Sessões de Cinema_files/css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #000000;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+        }
+
+        /* Header - Absolute positioning para Samsung Web Viewer */
+        .black-header {
+            background-color: #000000;
+            color: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            padding: 15px 30px;
+            z-index: 100;
+        }
+
+        .logo {
+            float: left;
+            height: 70px;
+            line-height: 70px;
+        }
+
+        .logo img {
+            height: 50px;
+            vertical-align: middle;
+        }
+
+        /* Clock - Absolute positioning */
+        .clock {
+            position: absolute;
+            top: 23px;
+            right: 30px;
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.1rem;
+            z-index: 101;
+        }
+
+        /* Main Container - Absolute positioning para controlo total */
+        #session-container {
+            position: absolute;
+            top: 100px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+        }
+
+        /* Movies Container - Float layout para Samsung Web Viewer */
+        .movies-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Landscape (1920x1080) - Float layout 2x2 */
+        @media only screen and (min-width: 1081px) {
+            .movie-item {
+                float: left;
+                width: calc(50% - 7.5px);
+                height: calc(50% - 7.5px);
+                margin-right: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .movie-item:nth-child(2n) {
+                margin-right: 0;
+            }
+            
+            .movie-item:nth-child(1),
+            .movie-item:nth-child(2) {
+                margin-bottom: 15px;
+            }
+            
+            .movie-item:nth-child(3),
+            .movie-item:nth-child(4) {
+                margin-bottom: 0;
+            }
+        }
+
+        /* Portrait (1080x1920) - Float layout 4x1 */
+        @media only screen and (max-width: 1080px) {
+            .movie-item {
+                float: left;
+                width: 100%;
+                height: calc(25% - 11.25px);
+                margin-bottom: 15px;
+            }
+            
+            .movie-item:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        /* Movie Item - Float layout interno */
+        .movie-item {
+            background-color: #151515;
+            border: 2px solid #202020;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Movie Poster - Float left - LARGURA AUMENTADA */
+        .movie-poster {
+            float: left;
+            width: 310px;
+            height: 100%;
+            background-color: #151515;
+            position: relative;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px 8px 8px 8px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Movie Info - Margin left ajustado para o novo tamanho do poster */
+        .movie-info {
+            margin-left: 320px;
+            height: 100%;
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        /* Movie Header - Float layout */
+        .movie-header {
+            width: 100%;
+            margin-bottom: 15px;
+            overflow: hidden;
+			margin-top: 15px;
+        }
+
+        /* Movie Title - Float left */
+        .movie-title {
+            float: left;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 36px;
+            line-height: 1.2;
+            margin: 0;
+            width: 70%;
+            word-wrap: break-word;
+			
+        }
+
+        /* Movie Rating - Float right */
+        .movie-rating {
+            float: right;
+            color: #8a8a8a;
+            font-size: 28px;
+            font-weight: 500;
+            letter-spacing: 0.1rem;
+            width: 30%;
+            text-align: right;
+        }
+
+        /* Session Times - Absolute bottom */
+        .session-times {
+            position: absolute;
+            bottom: 160px;
+            left: 20px;
+            right: 20px;
+            overflow: hidden;
+        }
+
+        /* Session Time - Float left */
+        .session-time {
+            float: left;
+            padding: 8px 20px;
+            border-radius: 12px;
+            font-size: 30px;
+            font-weight: 500;
+            text-align: center;
+            letter-spacing: 0.05rem;
+            border: 2px solid;
+            min-width: 80px;
+            margin-right: 8px;
+            margin-bottom: 6px;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .session-time.enabled-first {
+            background-color: #EB9010;
+            color: #FFFFFF;
+            border-color: #9D7512;
+            -webkit-box-shadow: 0 0 10px rgba(245, 175, 0, 0.3);
+            -moz-box-shadow: 0 0 10px rgba(245, 175, 0, 0.3);
+            box-shadow: 0 0 10px rgba(245, 175, 0, 0.3);
+        }
+
+        .session-time.enabled {
+            background-color: #1f1f1f;
+            color: #828282;
+            border-color: #343434;
+        }
+
+        .session-time.enabled:hover {
+            background-color: #2a2a2a;
+            border-color: #4a4a4a;
+        }
+
+        .session-time.disabled {
+            background-color: #1f1f1f;
+            color: #828282;
+            border-color: #343434;
+        }
+
+        /* Clearfix para floats */
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Loading State - Absolute centering */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        /* Empty State - Absolute centering */
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            color: #8a8a8a;
+            font-size: 24px;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        /* Cinema Selection - Absolute centering */
+        .cinema-selection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .cinema-selection h2 {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 30px;
+        }
+
+        .cinema-item {
+            background-color: #151515;
+            border: 2px solid #202020;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            -o-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .cinema-item:hover {
+            border-color: #f5af00;
+            background-color: #1a1a1a;
+        }
+
+        .cinema-item a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .cinema-item:hover a {
+            color: #f5af00;
+        }
+
+        /* Ajustes específicos para Samsung Web Viewer portrait */
+        @media only screen and (max-width: 1080px) {
+            .movie-title {
+                font-size: 36px;
+            }
+            
+            .movie-rating {
+                font-size: 28px;
+            }
+            
+            .session-time {
+                font-size: 30px;
+                padding: 6px 10px;
+                min-width: 70px;
+            }
+            
+            .movie-poster {
+                width: 310px;
+            }
+            
+            .movie-info {
+                margin-left: 310px;
+            }
+        }
+
+        /* Fix para Samsung Web Viewer - forçar repaint */
+        .movie-item {
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+    </style>
+</head>
+
+<body cz-shortcut-listen="true" data-new-gr-c-s-check-loaded="14.1242.0" data-gr-ext-installed="">
+    <div class="clock">15:55</div>
+    
+    <div class="black-header clearfix">
+        <div class="logo">
+            <img src="file://192.168.32.1/operacoes/CLC_Comunica%C3%A7%C3%A3o/Comunica%C3%A7%C3%A3o%20CLC/Institucional/Logo/Logo%20CLC%20branco.png" alt="Castello Lopes Cinemas">
+        </div>
+    </div>
+
+    <div id="session-container"><div class="movies-container clearfix"><div class="movie-item"><div class="movie-poster"><img src="./Sessões de Cinema_files/Mundo-Jurassico-Renascimento-scaled.jpg" alt="Mundo Jurássico: Renascimento" onerror="this.src=&#39;/wp-content/themes/castellolopes/images/movie-placeholder.jpg&#39;"></div><div class="movie-info"><div class="movie-header clearfix"><h3 class="movie-title">Mundo Jurássico: Renascimento</h3><div class="movie-rating">M/12</div></div><div class="session-times clearfix"><div class="session-time enabled-first">21:35</div></div></div></div><div class="movie-item"><div class="movie-poster"><img src="./Sessões de Cinema_files/ESTOU-AQUI_POSTER_WEB-1.jpg" alt="Estou Aqui" onerror="this.src=&#39;/wp-content/themes/castellolopes/images/movie-placeholder.jpg&#39;"></div><div class="movie-info"><div class="movie-header clearfix"><h3 class="movie-title">Estou Aqui</h3><div class="movie-rating">M/14</div></div><div class="session-times clearfix"><div class="session-time disabled">13:55</div></div></div></div><div class="movie-item"><div class="movie-poster"><img src="./Sessões de Cinema_files/Como-Treinar-o-teu-Dragao-Poster-dob-scaled.jpg" alt="Como Treinares o Teu Dragão (Dob.)" onerror="this.src=&#39;/wp-content/themes/castellolopes/images/movie-placeholder.jpg&#39;"></div><div class="movie-info"><div class="movie-header clearfix"><h3 class="movie-title">Como Treinares o Teu Dragão (Dob.)</h3><div class="movie-rating">M/6</div></div><div class="session-times clearfix"><div class="session-time disabled">15:45</div></div></div></div><div class="movie-item"><div class="movie-poster"><img src="./Sessões de Cinema_files/F1-scaled.jpg" alt="F1: O Filme" onerror="this.src=&#39;/wp-content/themes/castellolopes/images/movie-placeholder.jpg&#39;"></div><div class="movie-info"><div class="movie-header clearfix"><h3 class="movie-title">F1: O Filme</h3><div class="movie-rating">M/12</div></div><div class="session-times clearfix"><div class="session-time enabled-first">18:30</div></div></div></div></div></div>
+
+
+
+<script>
+        var checkHora = '15';
+    var recalc = 1;
+    var diff = '0';
+    var timeNow = '00:00';
+    
+    function startTime() {
+        var today = new Date();
+        
+        if (recalc === 1) {
+            if (checkHora > today.getHours()) {
+                var newHora = checkHora - today.getHours();
+                recalc = 2;
+                diff = newHora;
+            } else if (checkHora < today.getHours()) {
+                var newHora = today.getHours() - checkHora;
+                diff = newHora;
+                recalc = 2;
+            } else {
+                diff = 0;
+                recalc = 2;
+            }
+        }
+        
+        today.setHours(today.getHours() + diff);
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        timeNow = h + ":" + m;
+        
+        // Atualizar o relógio no DOM
+        var clockElement = document.getElementsByClassName('clock')[0];
+        if (clockElement) {
+            clockElement.innerHTML = timeNow;
+        }
+        
+        var t = setTimeout(startTime, 1000);
+    }
+
+    function checkTime(i) {
+        if (i < 10) {
+            i = "0" + i
+        }
+        return i;
+    }
+
+    function splitTimeString(hm) {
+        var a = hm.split(':');
+        return (a[0] == 0 ? 24 : +a[0]) * 60 * 60 + (+a[1]) * 60;
+    }
+
+    var pagePeriod = 15000; //milliseconds
+    const refreshPeriod = 600000;
+    const maxMovies = 4;
+    var timeElapsed = 0;
+    var currentPage = 0;
+    var maxPage = 0;
+    var movies_data;
+    var sessionNumberAdjust = 0;
+    var urlParams = new URLSearchParams(window.location.search);
+    var cinema = urlParams.get('cinema');
+
+    var updateTable = function (force) {
+        timeElapsed += pagePeriod;
+        if(timeElapsed >= refreshPeriod || force) {
+            jQuery.get('/wp-json/sessions/cinema', {cinema: cinema, date: new Date().toJSON().slice(0, 10)}).done(function (data) {
+                movies_data = data;
+                maxPage = Math.ceil(movies_data.length/maxMovies);
+                currentPage = 0;
+                refreshPage(movies_data, 0);
+                sessionNumberAdjust = 0;
+            });
+            timeElapsed = 0;
+        }
+        if(movies_data) {
+            console.log(currentPage, maxPage, timeElapsed, sessionNumberAdjust,  ( currentPage * maxMovies ) + sessionNumberAdjust);
+            sessionNumberAdjust = refreshPage(movies_data, ( currentPage * maxMovies ) + sessionNumberAdjust );
+        }
+        currentPage += 1;
+        if (currentPage >= maxPage){
+            currentPage = 0;
+            sessionNumberAdjust = 0;
+        }
+    };
+
+    var refreshPage = function(data, s_idx){
+        if (data.length == 0) {
+            jQuery('#session-container').html('<div class="empty-state">Não há sessões disponíveis para hoje.</div>');
+            return 0;
+        }
+        
+        var $sessionContainer = jQuery('#session-container');
+        $sessionContainer.html('<div class="movies-container clearfix"></div>');
+        var $moviesContainer = $sessionContainer.find('.movies-container');
+        
+        var idx = 0;
+        var i = s_idx;
+        
+        for (; i < data.length; i++) {
+            var movie = data[i];
+            var sessions = movie.sessions.split(';');
+            var nowSeconds = splitTimeString(timeNow);
+            
+            if (sessions.length == 0) {
+                continue;
+            }
+            
+            // Criar HTML para os horários
+            var htmlSessions = "";
+            var firstEnabled = false;
+            
+            for (var j in sessions) {
+                var time = sessions[j];
+                var timeSeconds = splitTimeString(time);
+                
+                if (nowSeconds > 780 && timeSeconds < 780 && sessions.length > 1) {
+                    continue;
+                }
+                
+                var sessionClass = 'disabled';
+                if (timeSeconds + 600 > nowSeconds) {
+                    if (!firstEnabled) {
+                        sessionClass = 'enabled-first';
+                        firstEnabled = true;
+                    } else {
+                        sessionClass = 'enabled';
+                    }
+                }
+                
+                htmlSessions += '<div class="session-time ' + sessionClass + '">' + time + '</div>';
+            }
+            
+            // Obter URL do poster da API (se disponível) ou usar placeholder
+            var posterUrl = movie.poster_url || '/wp-content/themes/castellolopes/images/movie-placeholder.jpg';
+            
+            // Criar HTML para o filme
+            var movieHtml = 
+                '<div class="movie-item">' +
+                    '<div class="movie-poster">' +
+                        '<img src="' + posterUrl + '" alt="' + movie.title + '" onerror="this.src=\'/wp-content/themes/castellolopes/images/movie-placeholder.jpg\'">' +
+                    '</div>' +
+                    '<div class="movie-info">' +
+                        '<div class="movie-header clearfix">' +
+                            '<h3 class="movie-title">' + movie.title + '</h3>' +
+                            '<div class="movie-rating">' + (movie.rating ? movie.rating : '') + '</div>' +
+                        '</div>' +
+                        '<div class="session-times clearfix">' + htmlSessions + '</div>' +
+                    '</div>' +
+                '</div>';
+            
+            $moviesContainer.append(movieHtml);
+            idx++;
+            
+            if(idx >= maxMovies){
+                break;
+            }
+        }
+        
+        return i + 1 - maxMovies - s_idx < 0 ? 0 : i + 1 - ( maxMovies * ( currentPage + 1 ));
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Iniciar o relógio imediatamente
+        startTime();
+        
+        if (cinema) {
+            updateTable(true);
+            setInterval(updateTable, pagePeriod);
+        }
+    });
+
+</script>
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
